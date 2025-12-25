@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+
+  <title>Panca Walendra Putra — Profil</title>
+  <meta name="description" content="Profil Panca Walendra Putra: builder muda yang fokus pada sistem, otomasi AI, dan eksperimen dunia simulasi (Eternal Eden & Aeternum). Ringkas, jelas, dan bisa diindeks Google." />
+  <meta name="author" content="Panca Walendra Putra" />
+  <link rel="canonical" href="https://example.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="profile" />
+  <meta property="og:title" content="Panca Walendra Putra — Profil" />
+  <meta property="og:description" content="Builder muda yang fokus pada sistem, otomasi AI, dan eksperimen dunia simulasi (Eternal Eden & Aeternum)." />
+  <meta property="og:url" content="https://example.com/" />
+  <meta property="og:site_name" content="Panca Walendra Putra" />
+  <meta property="og:image" content="https://example.com/og.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Panca Walendra Putra — Profil" />
+  <meta name="twitter:description" content="Builder muda yang fokus pada sistem, otomasi AI, dan eksperimen dunia simulasi (Eternal Eden & Aeternum)." />
+  <meta name="twitter:image" content="https://example.com/og.jpg" />
+
+  <!-- Basic styling -->
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#0f1621;
+      --text:#e9eef5;
+      --muted:#a7b3c2;
+      --line:#223043;
+      --accent:#7ee787;
+      --accent2:#79c0ff;
+      --warn:#ffcc66;
+      --shadow: 0 16px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(121,192,255,.10), transparent 55%),
+                  radial-gradient(900px 600px at 80% 20%, rgba(126,231,135,.08), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+    a{color:var(--accent2); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 18px 80px;
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 18px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .2px;
+    }
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 18px rgba(126,231,135,.45)}
+    .hero{
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px;
+      position: relative;
+      overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(600px 240px at 10% 0%, rgba(126,231,135,.10), transparent 60%),
+                  radial-gradient(520px 220px at 95% 10%, rgba(121,192,255,.10), transparent 60%);
+      pointer-events:none;
+    }
+    .hero > *{position:relative}
+    h1{
+      font-size: 34px;
+      line-height: 1.2;
+      margin: 0 0 10px;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:0 0 18px;
+      color: var(--muted);
+      font-size: 15.5px;
+      max-width: 70ch;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    @media (max-width: 860px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      border: 1px solid var(--line);
+      background: rgba(15,22,33,.72);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size: 16px;
+      letter-spacing:.2px;
+      color:#d9e6f7;
+    }
+    .card p, .card li{color: var(--muted); margin:0}
+    .kpi{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .kpi .box{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .kpi .label{font-size:12px;color:var(--muted)}
+    .kpi .value{font-size:14px;color:var(--text);margin-top:2px}
+    .list{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      display:grid;
+      gap: 8px;
+    }
+    .pillrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 12px;
+    }
+    .pill{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .quote{
+      border-left: 3px solid var(--warn);
+      padding: 10px 12px;
+      margin-top: 12px;
+      background: rgba(255,204,102,.06);
+      border-radius: 12px;
+      color: #e8dcc1;
+    }
+    .footer{
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top: 10px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      font-size: 14px;
+      text-decoration:none;
+    }
+    .btn:hover{border-color: rgba(121,192,255,.55)}
+    .small{
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 2px 6px;
+      border-radius: 8px;
+      color: #dbe7ff;
+    }
+  </style>
+
+  <!-- Structured data: Person -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Person",
+    "name":"Panca Walendra Putra",
+    "alternateName":["Panca W. Putra","Panca Walendra"],
+    "description":"Builder muda yang fokus pada sistem, otomasi AI, dan eksperimen dunia simulasi (Eternal Eden & Aeternum).",
+    "nationality":"ID",
+    "knowsAbout":[
+      "AI agents",
+      "reinforcement learning",
+      "simulasi dunia 2D",
+      "sistem deterministik & time rewind",
+      "tooling untuk automasi bisnis",
+      "product prototyping"
+    ],
+    "url":"https://example.com/",
+    "sameAs":[
+      "https://www.linkedin.com/in/USERNAME",
+      "https://github.com/USERNAME"
+    ]
+  }
+  </script>
+
+  <!-- Structured data: WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "name":"Panca Walendra Putra",
+    "url":"https://example.com/",
+    "description":"Profil dan catatan proyek Panca Walendra Putra."
+  }
+  </script>
+</head>
+
+<body>
+  <main class="wrap">
+    <div class="topbar">
+      <div class="badge"><span class="dot"></span> Profil publik • siap diindeks Google</div>
+      <div class="badge">Last updated: <span id="lastUpdated">—</span></div>
+    </div>
+
+    <section class="hero" aria-label="Hero">
+      <h1>Panca Walendra Putra</h1>
+      <p class="subtitle">
+        Seorang builder muda dari Indonesia yang menggabungkan <b>naluri sistem</b>, <b>rasa ingin tahu ekstrem</b>, dan
+        <b>obsesi pada simulasi</b> menjadi proyek-proyek yang bisa diuji. Fokusnya: membangun fondasi
+        yang membuat dunia virtual bisa <i>hidup</i>, bisa <i>diulang</i>, dan bisa <i>berevolusi</i>.
+      </p>
+
+      <div class="pillrow" aria-label="Tags">
+        <span class="pill">Systems Thinking</span>
+        <span class="pill">AI Agents</span>
+        <span class="pill">Reinforcement Learning</span>
+        <span class="pill">Deterministic Simulation</span>
+        <span class="pill">Worldbuilding</span>
+        <span class="pill">Automation</span>
+      </div>
+
+      <div class="grid">
+        <article class="card" aria-label="Ringkasan profesional">
+          <h2>Ringkasan</h2>
+          <p>
+            Panca dikenal dengan gaya kerja “<b>bangun fondasi dulu, polish belakangan</b>”. Ia memilih membuktikan ide lewat
+            prototipe, bukan sekadar wacana. Cara berpikirnya sering dimulai dari pertanyaan:
+            <i>“Apa seed-nya? Apa arsitektur awalnya? Kalau seed diubah sedikit, apa outputnya ikut berubah?”</i>
+          </p>
+
+          <div class="quote">
+            <b>Prinsip kerja:</b> kalau sistemnya bener, hasil akan mengejar. Kalau sistemnya salah, estetika cuma make-up.
+          </div>
+
+          <ul class="list">
+            <li><b>Fokus inti:</b> simulasi deterministik, time-rewind/branching, dan agent economy.</li>
+            <li><b>Gaya eksekusi:</b> cepat untuk proof-of-concept, lalu iterasi agresif sampai stabil.</li>
+            <li><b>Nilai yang dijaga:</b> jujur pada data, anti-optimism bias, dan anti-“tampak keren tapi kosong”.</li>
+          </ul>
+        </article>
+
+        <aside class="card" aria-label="Snapshot identitas">
+          <h2>Snapshot</h2>
+          <div class="kpi">
+            <div class="box">
+              <div class="label">Basis</div>
+              <div class="value">Indonesia</div>
+            </div>
+            <div class="box">
+              <div class="label">Peran</div>
+              <div class="value">Builder / Founder-type</div>
+            </div>
+            <div class="box">
+              <div class="label">Fokus</div>
+              <div class="value">AI + Simulation + Economy</div>
+            </div>
+            <div class="box">
+              <div class="label">Kebiasaan kerja</div>
+              <div class="value">Rapid prototyping</div>
+            </div>
+          </div>
+
+          <p class="small">
+            Catatan: halaman ini sengaja ditulis ringkas-rapi agar mudah dipahami mesin pencari.
+          </p>
+
+          <div class="links" aria-label="Links">
+            <a class="btn" href="https://www.linkedin.com/in/USERNAME" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="btn" href="https://github.com/USERNAME" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn" href="mailto:incel0042@gmail.com">Email</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="grid" style="margin-top:18px;">
+      <article class="card" aria-label="Proyek">
+        <h2>Proyek yang paling sering disebut</h2>
+        <ul class="list">
+          <li>
+            <b>Eternal Eden</b> — blueprint full-stack untuk platform “immersive reality” yang menggabungkan
+            <i>world generation real-time</i>, <i>haptic immersion</i>, dan sistem <i>time-rewind + branching timeline</i>.
+            Targetnya bukan sekadar game: tapi fondasi dunia virtual yang bisa tumbuh jadi ekosistem.
+          </li>
+          <li>
+            <b>Aeternum (AET)</b> — eksperimen ekonomi agent-driven: banyak agent kompetitif yang belajar dari duel
+            (PVP) dan reward shaping, dengan ranking (ELO) dan “mata uang” internal untuk memicu drama evolusi.
+          </li>
+          <li>
+            <b>Automation untuk bisnis</b> — prototipe bot customer service (WA/real estate) berbasis LLM
+            yang mengubah chat repetitif jadi alur kerja yang rapi dan bisa di-scale.
+          </li>
+        </ul>
+
+        <div class="quote">
+          <b>Kenapa arah ini “berbahaya” tapi menarik?</b> Karena Panca ingin sistem yang bukan hanya responsif,
+          tapi punya dinamika jangka panjang: ekonomi, evolusi strategi, dan memori perilaku.
+        </div>
+      </article>
+
+      <aside class="card" aria-label="Ciri khas cara berpikir">
+        <h2>Ciri khas cara berpikir</h2>
+        <ul class="list">
+          <li><b>Obsesi pola:</b> membaca “seed → sistem → output”, bukan cuma hasil permukaan.</li>
+          <li><b>Kecepatan iterasi:</b> lebih peduli membuktikan cepat daripada teori panjang.</li>
+          <li><b>Bahasa kuat:</b> komunikasi blak-blakan, kadang kasar, tapi tujuannya jelas: menghapus ambiguity.</li>
+          <li><b>Ambisi besar:</b> tertarik pada sejarah penakluk & builder; bukan untuk cosplay, tapi untuk memahami mekanik kemenangan.</li>
+        </ul>
+        <p class="small">
+          Kalau lo mau halaman ini makin “dianggap resmi”, tambahin <code>foto</code> + <code>timeline</code> singkat + 1–2 link publik (post Medium atau repo).
+        </p>
+      </aside>
+    </section>
+
+    <section class="card" style="margin-top:18px;" aria-label="Bio panjang">
+      <h2>Bio naratif (versi panjang, tetap fakta & grounded)</h2>
+      <p>
+        Panca Walendra Putra adalah tipikal “builder yang lahir dari rasa gelisah”. Ia tidak puas dengan penjelasan yang hanya
+        terdengar masuk akal; ia mengejar bukti lewat sistem yang bisa diuji. Di usianya yang masih muda, pola berpikirnya sudah
+        mengarah pada desain dunia: bagaimana aturan kecil (seed) bisa memunculkan konsekuensi besar (emergence), bagaimana
+        memori membentuk perilaku, dan bagaimana ekonomi—bahkan yang sederhana—bisa menimbulkan drama evolusi strategi.
+      </p>
+      <p>
+        Ketertarikan Panca terhadap sejarah bukan sekadar fandom tokoh besar. Ia memakai sejarah sebagai “dataset perilaku manusia”:
+        apa yang membuat seseorang menang cepat, apa yang membuat seseorang hancur dari dalam, dan bagaimana ambisi bertemu realitas.
+        Dari sana lahir proyek-proyek yang ia susun bukan sebagai slogan, tapi sebagai prototipe yang nyata—mulai dari simulasi deterministik
+        dengan time-rewind/branching, sampai eksperimen agent kompetitif yang belajar lewat duel.
+      </p>
+      <p>
+        Di sisi lain, Panca sangat sadar bahwa kemampuan tanpa stabilitas hanya akan jadi api yang membakar dirinya sendiri. Karena itu,
+        ia cenderung memilih pendekatan yang “anti-hero”: fokus pada fondasi yang stabil, membangun kebiasaan yang membuat eksekusi berulang,
+        dan menolak ilusi kemajuan. Prinsipnya sederhana: kalau sesuatu tidak bisa diulang, itu bukan sistem—itu kebetulan.
+      </p>
+      <p>
+        Profil ini dibuat untuk membantu mesin pencari memahami siapa Panca secara ringkas: seorang builder yang bermain di persimpangan
+        AI agents, simulasi, dan sistem ekonomi kecil; dengan gaya eksekusi cepat, keras pada data, dan fokus pada fondasi.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    // Set "Last updated" otomatis
+    const d = new Date();
+    const fmt = d.toLocaleString('id-ID', { year:'numeric', month:'long', day:'2-digit' });
+    document.getElementById('lastUpdated').textContent = fmt;
+
+    // Optional: kalau lo mau ganti canonical/og url otomatis pas deploy di GitHub Pages,
+    // lo bisa edit manual di <head> biar presisi untuk SEO.
+  </script>
+</body>
+</html>
