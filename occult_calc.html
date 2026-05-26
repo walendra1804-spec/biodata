@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Occult Data Processor V2 (Raw Engine)</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --panel-color: #161b22;
+            --border-color: #30363d;
+            --text-main: #c9d1d9;
+            --text-accent: #58a6ff;
+            --text-success: #2ea043;
+            --text-dim: #8b949e;
+            --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            margin: 0;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--text-accent);
+        }
+
+        .status {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        /* --- TABS --- */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            background: var(--panel-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .tab-btn.active {
+            background: var(--text-accent);
+            color: #000;
+            border-color: var(--text-accent);
+            font-weight: bold;
+        }
+
+        /* --- PANELS --- */
+        .panel {
+            background: var(--panel-color);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            display: none;
+            /* Hidden by default */
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* --- FORMS --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            background: #0d1117;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px;
+            font-family: var(--font-mono);
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--text-accent);
+            outline: none;
+        }
+
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        /* --- DOCS --- */
+        details {
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        summary {
+            padding: 10px;
+            cursor: pointer;
+            background: #21262d;
+            font-weight: bold;
+        }
+
+        .doc-content {
+            padding: 15px;
+            background: #0d1117;
+        }
+
+        code {
+            color: var(--text-success);
+        }
+
+        /* --- CONTROLS --- */
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--text-success);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-copy {
+            background: var(--text-accent);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+        }
+
+        /* --- OUTPUT --- */
+        #output-area {
+            margin-top: 20px;
+            background: #000;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            overflow-x: auto;
+            min-height: 200px;
+        }
+
+        pre {
+            margin: 0;
+            color: var(--text-success);
+            line-height: 1.4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>OCCULT_DATA_PROCESSOR_V2</h1>
+            <span class="status">SYSTEM: ONLINE | MODE: RAW_CALC</span>
+        </header>
+
+        <!-- INPUT TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('manual')">MANUAL INPUT</button>
+            <button class="tab-btn" onclick="switchTab('json')">JSON INPUT</button>
+        </div>
+
+        <!-- PANEL 1: MANUAL INPUT -->
+        <div id="panel-manual" class="panel active">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>FULL NAME (Nama Lengkap)</label>
+                    <input type="text" id="inp_name" placeholder="e.g. Zorak">
+                </div>
+
+                <div class="form-group">
+                    <label>BIRTH DATE (Tanggal Lahir)</label>
+                    <input type="date" id="inp_date">
+                </div>
+
+                <div class="form-group">
+                    <label>BIRTH TIME (Waktu Lahir - 24h)</label>
+                    <input type="time" id="inp_time" value="12:00">
+                </div>
+
+                <div class="form-group">
+                    <label>LATITUDE (Garis Lintang - Decimal)</label>
+                    <input type="number" id="inp_lat" placeholder="e.g. -7.02 (South is negative)" step="0.0001">
+                    <small style="color: #666">Positive = North, Negative = South</small>
+                </div>
+
+                <div class="form-group">
+                    <label>LONGITUDE (Garis Bujur - Decimal)</label>
+                    <input type="number" id="inp_long" placeholder="e.g. 107.5 (East)" step="0.0001">
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 2: JSON INPUT -->
+        <div id="panel-json" class="panel">
+            <details>
+                <summary>DOCUMENTATION: EXPECTED JSON FORMAT</summary>
+                <div class="doc-content">
+                    <p>Paste your JSON below. The engine requires these keys:</p>
+                    <pre>
+{
+  "name": "Zorak",
+  "birth_date": "2008-05-28",  // Format: YYYY-MM-DD
+  "birth_time": "19:15",       // Format: HH:MM
+  "latitude": -7.0,            // Float (South is negative)
+  "longitude": 107.5           // Float (East)
+}
+                    </pre>
+                </div>
+            </details>
+            <div class="form-group">
+                <label>JSON PAYLOAD</label>
+                <textarea id="inp_json_text" placeholder='{"name": "...", ...}'></textarea>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <button class="btn-primary" onclick="PROCESS_DATA()">EXTRACT RAW DATA</button>
+        </div>
+
+        <!-- OUTPUT -->
+        <div id="output-area">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <span style="color: #666; margin-bottom: 10px; display:block;">// RAW OUTPUT TERMINAL</span>
+                <button class="btn-copy" onclick="copyToClipboard()">COPY JSON</button>
+            </div>
+            <pre id="result-display">WAITING FOR INPUT STREAM...</pre>
+        </div>
+    </div>
+
+    <script>
+        // --- UI LOGIC ---
+        let currentMode = 'manual';
+
+        function switchTab(mode) {
+            currentMode = mode;
+            // Update Buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update Panels
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`panel-${mode}`).classList.add('active');
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('result-display').innerText;
+            if (text.includes("WAITING") || text.includes("ERROR")) return;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.btn-copy');
+                const original = btn.innerText;
+                btn.innerText = "COPIED!";
+                setTimeout(() => btn.innerText = original, 2000);
+            });
+        }
+
+        /**
+     * ==========================================
+     * SECTION 2: CHRONO-ENGINE (Time Algorithms)
+     * ==========================================
+     */
+
+        const CHRONO = {
+
+            // --- HELPERS ---
+            isLeap: (year) => ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0),
+
+            // Modulo that handles negative numbers correctly (e.g., -1 % 5 = 4)
+            mod: (n, m) => ((n % m) + m) % m,
+
+            // --- JAVANESE SYSTEM CORE ---
+            // Reference: 1 Jan 1900 was Senin (1), Pahing (1)
+            // We use Julian Day Number (JDN) for absolute day calculation
+
+            getJDN: (dateObj) => {
+                let y = dateObj.getFullYear();
+                let m = dateObj.getMonth() + 1;
+                let d = dateObj.getDate();
+
+                if (m <= 2) { y -= 1; m += 12; }
+                const A = Math.floor(y / 100);
+                const B = 2 - A + Math.floor(A / 4);
+                return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + B - 1524.5;
+            },
+
+            calculateJavaComplex: (dateObj) => {
+                const jdn = Math.floor(CHRONO.getJDN(dateObj)); // Rounded for integer arithmetic
+                // Reference JDN for 1 Jan 1900: 2415021
+                // But let's use a known Wuku anchor.
+                // Anchor: Sunday, 2 May 2010 was start of Wuku Sinta (1). JDN: 2455319
+                const wukuAnchor = 2455319; // Minggu Pahing, Wuku Sinta
+
+                const dayDiff = jdn - wukuAnchor;
+
+                // 1. PASARAN (5-Day Cycle)
+                // Legi, Pahing, Pon, Wage, Kliwon
+                const pasaranNames = ['Legi', 'Pahing', 'Pon', 'Wage', 'Kliwon'];
+                // Anchor 2 May 2010 was Pahing (Index 1)
+                // We need to offset calculation.
+                // If dayDiff = 0 -> Index 1.
+                const pasaranIdx = CHRONO.mod((dayDiff + 1), 5);
+
+                // 2. DINA (7-Day Cycle)
+                // Minggu, Senin, Selasa, Rabu, Kamis, Jumat, Sabtu
+                const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const dayIdx = dateObj.getDay(); // JS Native: 0=Sun
+
+                // 3. NEPTU
+                const neptuDay = [5, 4, 3, 7, 8, 6, 9]; // Sun -> Sat
+                const neptuPasaran = [5, 9, 7, 4, 8];   // Legi -> Kliwon
+                const neptuTotal = neptuDay[dayIdx] + neptuPasaran[pasaranIdx];
+
+                // 4. WUKU (30-Week Cycle = 210 Days)
+                // Sinta, Landep, Wukir, Kurantil, Tolu, Gumbreg, Warigalit, Warigagung, Julungwangi, Sungsang, 
+                // Galungan, Kuningan, Langkir, Mandasiya, Julungpujut, Pahang, Kuruwelut, Marakeh, Tambir, Medangkungan, 
+                // Maktal, Wuye, Manahil, Prangbakat, Bala, Wugu, Wayang, Kulawu, Dukut, Watugunung.
+                const wukuNames = [
+                    "Sinta", "Landep", "Wukir", "Kurantil", "Tolu", "Gumbreg",
+                    "Warigalit", "Warigagung", "Julungwangi", "Sungsang",
+                    "Galungan", "Kuningan", "Langkir", "Mandasiya", "Julungpujut",
+                    "Pahang", "Kuruwelut", "Marakeh", "Tambir", "Medangkungan",
+                    "Maktal", "Wuye", "Manahil", "Prangbakat", "Bala",
+                    "Wugu", "Wayang", "Kulawu", "Dukut", "Watugunung"
+                ];
+                const wukuIdx = CHRONO.mod(Math.floor(dayDiff / 7), 30);
+
+                // 5. PARINGKELAN (6-Day Cycle)
+                // Tungle, Aryang, Warukung, Paningron, Uwas, Mawulu
+                // Cycle repeats every 6 days.
+                // Anchor alignment needed. Let's rely on standard sequence from JDN.
+                const paringkelanNames = ['Tungle', 'Aryang', 'Warukung', 'Paningron', 'Uwas', 'Mawulu'];
+                // 2 May 2010 (Anchor) -> Paningron (Index 3)
+                const paringkelanIdx = CHRONO.mod((dayDiff + 3), 6);
+
+                // 6. PADANGON (9-Day Cycle)
+                // Dadi, Dangu, Jagur, Gigis, Kerangan, Nohan, Wogan, Tulus, Wurung
+                // Anchor needed.
+                const padangonNames = ['Dadi', 'Dangu', 'Jagur', 'Gigis', 'Kerangan', 'Nohan', 'Wogan', 'Tulus', 'Wurung'];
+                // Alignment approximation based on common algorithm variants
+                const padangonIdx = CHRONO.mod(jdn, 9);
+
+                // 7. LAKUNING (Character based on Neptu)
+                const lakuningMap = {
+                    7: "Lakuning Pendito Sakti", 8: "Lakuning Geni", 9: "Lakuning Angin",
+                    10: "Lakuning Pendito Mbangun Teki", 11: "Lakuning Setan", 12: "Lakuning Kembang",
+                    13: "Lakuning Lintang", 14: "Lakuning Bulan", 15: "Lakuning Srengenge",
+                    16: "Lakuning Bumi", 17: "Lakuning Gunung", 18: "Lakuning Paripurna"
+                };
+
+                return {
+                    pasaran: `${dayNames[dayIdx]} ${pasaranNames[pasaranIdx]}`,
+                    neptu: neptuTotal,
+                    wuku: wukuNames[wukuIdx],
+                    padangon: padangonNames[padangonIdx],
+                    paringkelan: paringkelanNames[paringkelanIdx],
+                    lakuning: lakuningMap[neptuTotal] || "Unknown"
+                };
+            },
+
+            // --- CHINESE SYSTEM ---
+            calculateChinese: (dateObj, sunLongitude) => {
+                let y = dateObj.getFullYear();
+                const m = dateObj.getMonth() + 1;
+                const d = dateObj.getDate();
+
+                // Li Chun is the boundary for Chinese Solar New Year (usually Feb 4).
+                // If sunLongitude is available (from Swiss Ephemeris API):
+                // - Sun at 315° ecliptic longitude is the exact moment of Li Chun.
+                // - If month is Jan, it's definitely before Li Chun -> previous year.
+                // - If month is Feb and Sun longitude is less than 315°, it's before Li Chun -> previous year.
+                if (sunLongitude !== undefined && sunLongitude !== null) {
+                    if (m === 1) {
+                        y -= 1;
+                    } else if (m === 2 && sunLongitude < 315) {
+                        y -= 1;
+                    }
+                } else {
+                    // Fallback to day-based approximation: if before Feb 4th, it's previous year.
+                    if (m < 2 || (m === 2 && d < 4)) {
+                        y -= 1;
+                    }
+                }
+
+                const animals = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
+                // 1900 was Rat. Rat is index 0.
+                const offset = y - 1900;
+                const shioIdx = CHRONO.mod(offset, 12);
+
+                const elements = ['Metal', 'Metal', 'Water', 'Water', 'Wood', 'Wood', 'Fire', 'Fire', 'Earth', 'Earth'];
+                const elemIdx = CHRONO.mod(y, 10);
+
+                return {
+                    shio: `${elements[elemIdx]} ${animals[shioIdx]}`
+                };
+            }
+        };
+
+        /**
+         * ==========================================
+         * SECTION 3: ASTRAL-ENGINE (Astronomy Logic)
+         * ==========================================
+         */
+
+        const ASTRO = {
+
+            // --- MATH UTILS ---
+            d2r: (d) => d * (Math.PI / 180),
+            r2d: (r) => r * (180 / Math.PI),
+            normalizeDeg: (d) => {
+                d = d % 360;
+                if (d < 0) d += 360;
+                return d;
+            },
+
+            // --- ZODIAC MAP ---
+            getSign: (deg) => {
+                const signs = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+                const idx = Math.floor(deg / 30);
+                return signs[idx % 12];
+            },
+
+            // --- PLANETARY POSITIONS ---
+            // Keplerian formulas removed in favor of precise Swiss Ephemeris API.
+
+            // --- ASCENDANT CALCULATION ---
+            getAscendant: (jdn, hourDecimal, lat, long) => {
+                // 1. Calculate Greenwhich Sidereal Time (GMST)
+                const T = (jdn - 2451545.0) / 36525;
+                const GMST0 = 280.46061837 + 360.98564736629 * (jdn - 2451545.0) + 0.000387933 * T * T - T * T * T / 38710000;
+                const GMST = ASTRO.normalizeDeg(GMST0);
+
+                // 2. Local Sidereal Time (LST)
+                // Longitude is added (East is +)
+                const LST = ASTRO.normalizeDeg(GMST + long);
+
+                // 3. Obliquity of Ecliptic (E)
+                const eps = 23.439 - 0.0000004 * (jdn - 2451545.0); // Approx
+
+                // 4. Calculate Ascendant (Asc)
+                // Formula: tan(Asc) = cos(LST) / - (sin(LST) * cos(E) + tan(Lat) * sin(E))
+                const radLST = ASTRO.d2r(LST);
+                const radE = ASTRO.d2r(eps);
+                const radLat = ASTRO.d2r(lat);
+
+                const num = Math.cos(radLST);
+                const den = -(Math.sin(radLST) * Math.cos(radE) + Math.tan(radLat) * Math.sin(radE));
+
+                let ascRad = Math.atan2(num, den); // Returns -PI to PI
+                let ascDeg = ASTRO.r2d(ascRad);
+
+                // atan2 usually gives correct quadrant, but let's normalize
+                ascDeg = ASTRO.normalizeDeg(ascDeg);
+
+                return ASTRO.getSign(ascDeg);
+            }
+        };
+
+        /**
+         * ==========================================
+         * SECTION 4: CIPHER-ENGINE (Numerology & Text)
+         * ==========================================
+         */
+
+        const CIPHER = {
+
+            // --- UTILS ---
+            clean: (str) => str.toUpperCase().replace(/[^A-Z]/g, ''),
+
+            reduce: (n) => {
+                while (n > 9 && n !== 11 && n !== 22 && n !== 33) {
+                    n = String(n).split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                }
+                return n;
+            },
+
+            reduceForceSingle: (n) => {
+                while (n > 9) {
+                    n = String(n).split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
+                }
+                return n;
+            },
+
+            // --- PYTHAGOREAN SYSTEM ---
+            pythagorean: (name) => {
+                const map = {
+                    A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9,
+                    J: 1, K: 2, L: 3, M: 4, N: 5, O: 6, P: 7, Q: 8, R: 9,
+                    S: 1, T: 2, U: 3, V: 4, W: 5, X: 6, Y: 7, Z: 8
+                };
+                const chars = CIPHER.clean(name).split('');
+                let sumExp = 0, sumSoul = 0, sumPers = 0;
+
+                chars.forEach(c => {
+                    const val = map[c] || 0;
+                    sumExp += val;
+                    if ('AEIOU'.includes(c)) sumSoul += val;
+                    else sumPers += val;
+                });
+
+                return {
+                    expression: CIPHER.reduce(sumExp),
+                    soulUrge: CIPHER.reduce(sumSoul),
+                    personality: CIPHER.reduce(sumPers)
+                };
+            },
+
+            // --- CHALDEAN SYSTEM ---
+            chaldean: (name) => {
+                const map = {
+                    A: 1, I: 1, J: 1, Q: 1, Y: 1,
+                    B: 2, K: 2, R: 2,
+                    C: 3, G: 3, L: 3, S: 3,
+                    D: 4, M: 4, T: 4,
+                    E: 5, H: 5, N: 5, X: 5,
+                    U: 6, V: 6, W: 6,
+                    O: 7, Z: 7,
+                    F: 8, P: 8
+                }; // No 9
+                const chars = CIPHER.clean(name).split('');
+                let sum = 0;
+                chars.forEach(c => sum += (map[c] || 0));
+
+                return {
+                    compound: sum,
+                    reduced: CIPHER.reduceForceSingle(sum)
+                };
+            },
+
+            // --- HEBREW GEMATRIA (English Qabalah approx) ---
+            hebrew: (name) => {
+                // Mispar Hechrechi standard mapping for Latin approximation
+                const map = {
+                    A: 1, B: 2, C: 20, D: 4, E: 5, F: 80, G: 3, H: 5, I: 10,
+                    J: 10, K: 20, L: 30, M: 40, N: 50, O: 70, P: 80, Q: 100,
+                    R: 200, S: 300, T: 400, U: 6, V: 6, W: 6, X: 60, Y: 10, Z: 7
+                };
+                const chars = CIPHER.clean(name).split('');
+                let sum = 0;
+                chars.forEach(c => sum += (map[c] || 0));
+                return {
+                    full: sum,
+                    reduced: CIPHER.reduceForceSingle(sum)
+                };
+            },
+
+            // --- RUNE MAPPING ---
+            getRune: (char) => {
+                const runes = {
+                    A: "Ansuz", B: "Berkanan", C: "Kenaz", D: "Dagaz", E: "Ehwaz",
+                    F: "Fehu", G: "Gebo", H: "Hagalaz", I: "Isa", J: "Jera",
+                    K: "Kenaz", L: "Laguz", M: "Mannaz", N: "Nauthiz", O: "Othala",
+                    P: "Perthro", Q: "Kenaz", R: "Raido", S: "Sowilo", T: "Tiwaz",
+                    U: "Uruz", V: "Wunjo", W: "Wunjo", X: "Algiz", Y: "Jera", Z: "Algiz"
+                };
+                return runes[char] || "Unknown";
+            },
+
+            // --- TAROT MAJOR ARCANA ---
+            getTarot: (num) => {
+                const cards = [
+                    "The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor",
+                    "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit",
+                    "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance",
+                    "The Devil", "The Tower", "The Star", "The Moon", "The Sun",
+                    "Judgment", "The World", "The Fool" // 22 -> 0/22
+                ];
+                // Adjust if Master Number > 22
+                let idx = num;
+                if (num > 22) idx = CIPHER.reduceForceSingle(num);
+                return cards[idx] || "Unknown";
+            },
+
+            // --- KABBALAH SEPHIROTH ---
+            getSephiroth: (num) => {
+                const sephiroth = {
+                    1: "Kether", 2: "Chokmah", 3: "Binah", 4: "Chesed", 5: "Gevurah",
+                    6: "Tiferet", 7: "Netzach", 8: "Hod", 9: "Yesod", 10: "Malkuth"
+                };
+                return sephiroth[CIPHER.reduceForceSingle(num)] || "Malkuth";
+            }
+        };
+
+        /**
+         * ==========================================
+         * SECTION 5: THE AGGREGATOR (Main Logic)
+         * ==========================================
+         */
+
+        async function PROCESS_DATA() {
+            // Show loading state in output area
+            document.getElementById('result-display').innerText = "CONNECTING TO ASTRAL REALM (FETCHING Precise EPHEMERIS DATA)...";
+
+            // 1. DATA GATHERING
+            let rawData = {};
+
+            try {
+                if (currentMode === 'manual') {
+                    rawData = {
+                        name: document.getElementById('inp_name').value.trim(),
+                        birth_date: document.getElementById('inp_date').value,
+                        birth_time: document.getElementById('inp_time').value || "12:00",
+                        latitude: parseFloat(document.getElementById('inp_lat').value) || 0.0,
+                        longitude: parseFloat(document.getElementById('inp_long').value) || 0.0
+                    };
+                } else {
+                    const jsonStr = document.getElementById('inp_json_text').value;
+                    if (!jsonStr) throw new Error("JSON Input is empty");
+                    rawData = JSON.parse(jsonStr);
+                }
+
+                // Validation
+                if (!rawData.name || !rawData.birth_date) {
+                    throw new Error("Missing mandatory fields (Name or Date)");
+                }
+
+            } catch (e) {
+                document.getElementById('result-display').innerText = `[ERROR]: ${e.message}\nCheck your JSON syntax or input fields.`;
+                return;
+            }
+
+            // 2. PARSE TIME & ESTIMATE UTC DATETIME
+            const dateParts = rawData.birth_date.split('-');
+            const timeParts = rawData.birth_time.split(':');
+            const dateObj = new Date(
+                parseInt(dateParts[0]),
+                parseInt(dateParts[1]) - 1,
+                parseInt(dateParts[2]),
+                parseInt(timeParts[0]),
+                parseInt(timeParts[1])
+            );
+
+            const jdn = CHRONO.getJDN(dateObj);
+            const timeDecimal = parseInt(timeParts[0]) + (parseInt(timeParts[1]) / 60);
+
+            // Estimate timezone offset from longitude (15 degrees = 1 hour)
+            const tzOffsetHours = rawData.longitude / 15;
+            const utcTimeMs = dateObj.getTime() - (tzOffsetHours * 60 * 60 * 1000);
+            const utcDate = new Date(utcTimeMs);
+            const isoString = utcDate.toISOString();
+
+            // 3. FETCH EPHEMERIS DATA FROM API
+            let apiData = null;
+            try {
+                const bodies = "sun,moon,mercury,venus,mars,jupiter,saturn,uranus,neptune,pluto";
+                const apiUrl = `https://ephemeris.fyi/ephemeris/get_ephemeris_data?latitude=${rawData.latitude}&longitude=${rawData.longitude}&datetime=${isoString}&bodies=${bodies}`;
+                const response = await fetch(apiUrl);
+                if (response.ok) {
+                    apiData = await response.json();
+                } else {
+                    console.warn(`API responded with code ${response.status}`);
+                }
+            } catch (e) {
+                console.error("API error, proceeding with fallback placeholder data", e);
+            }
+
+            // 4. EXECUTE ENGINES
+
+            // A. NAME CIPHERS
+            const pyth = CIPHER.pythagorean(rawData.name);
+            const chald = CIPHER.chaldean(rawData.name);
+            const hebrew = CIPHER.hebrew(rawData.name);
+            const cleanName = CIPHER.clean(rawData.name);
+
+            // Rune Logic
+            const firstRune = CIPHER.getRune(cleanName[0]);
+            const lastRune = CIPHER.getRune(cleanName[cleanName.length - 1]);
+            const domRune = CIPHER.getRune(cleanName[Math.floor(cleanName.length / 2)]);
+
+            // B. CHRONO (JAVA/CHINESE)
+            const java = CHRONO.calculateJavaComplex(dateObj);
+            const sunLongitude = apiData?.sun?.apparentLongitude;
+            const china = CHRONO.calculateChinese(dateObj, sunLongitude);
+            const lifePath = CIPHER.reduce(
+                parseInt(dateParts[0]) + parseInt(dateParts[1]) + parseInt(dateParts[2])
+            );
+            const birthdayNum = CIPHER.reduce(parseInt(dateParts[2]));
+
+            // C. ASTRO
+            const ascendant = ASTRO.getAscendant(jdn, timeDecimal, rawData.latitude, rawData.longitude);
+            
+            // Map planets from API data or use fallback
+            const planets = {
+                Sun: apiData?.sun?.apparentLongitude !== undefined ? ASTRO.getSign(apiData.sun.apparentLongitude) : "Aries (Fallback)",
+                Moon: apiData?.moon?.apparentLongitude !== undefined ? ASTRO.getSign(apiData.moon.apparentLongitude) : "Taurus (Fallback)",
+                Mercury: apiData?.mercury?.apparentLongitude !== undefined ? ASTRO.getSign(apiData.mercury.apparentLongitude) : "Gemini (Fallback)",
+                Venus: apiData?.venus?.apparentLongitude !== undefined ? ASTRO.getSign(apiData.venus.apparentLongitude) : "Cancer (Fallback)",
+                Mars: apiData?.mars?.apparentLongitude !== undefined ? ASTRO.getSign(apiData.mars.apparentLongitude) : "Leo (Fallback)",
+                Jupiter: apiData?.jupiter?.apparentLongitude !== undefined ? ASTRO.getSign(apiData.jupiter.apparentLongitude) : "Virgo (Fallback)",
+                Saturn: apiData?.saturn?.apparentLongitude !== undefined ? ASTRO.getSign(apiData.saturn.apparentLongitude) : "Libra (Fallback)",
+                Uranus: apiData?.uranus?.apparentLongitude !== undefined ? ASTRO.getSign(apiData.uranus.apparentLongitude) : "Scorpio (Fallback)",
+                Neptune: apiData?.neptune?.apparentLongitude !== undefined ? ASTRO.getSign(apiData.neptune.apparentLongitude) : "Sagittarius (Fallback)",
+                Pluto: apiData?.pluto?.apparentLongitude !== undefined ? ASTRO.getSign(apiData.pluto.apparentLongitude) : "Capricorn (Fallback)"
+            };
+
+            // 5. CONSTRUCT FINAL JSON STRUCTURE
+            const FINAL_OUTPUT = {
+                "DATA_KELAHIRAN": {
+                    "Nama": rawData.name,
+                    "Tanggal": rawData.birth_date,
+                    "Waktu": rawData.birth_time,
+                    "Lokasi_LatLong": `${rawData.latitude}, ${rawData.longitude}`
+                },
+                "ASTROLOGI_BARAT": {
+                    "Sun_Sign": planets.Sun,
+                    "Moon_Sign": planets.Moon,
+                    "Ascendant": ascendant,
+                    "Mercury": planets.Mercury,
+                    "Venus": planets.Venus,
+                    "Mars": planets.Mars,
+                    "Jupiter": planets.Jupiter,
+                    "Saturn": planets.Saturn,
+                    "Uranus": planets.Uranus,
+                    "Neptune": planets.Neptune,
+                    "Pluto": planets.Pluto
+                },
+                "NUMEROLOGI_KELAHIRAN": {
+                    "Life_Path": lifePath,
+                    "Birthday_Number": birthdayNum
+                },
+                "JAWANI_WETON": {
+                    "Pasaran": java.pasaran,
+                    "Neptu": java.neptu,
+                    "Wuku": java.wuku,
+                    "Padangon": java.padangon,
+                    "Paringkelan": java.paringkelan,
+                    "Lakuning": java.lakuning
+                },
+                "CHINESE_METAPHYSICS": {
+                    "Shio_Elemen": china.shio
+                },
+                "NUMEROLOGI_NAMA_PYTHAGOREAN": {
+                    "Expression": pyth.expression,
+                    "Soul_Urge": pyth.soulUrge,
+                    "Personality": pyth.personality
+                },
+                "CHALDEAN_NUMEROLOGY": {
+                    "Compound": chald.compound,
+                    "Reduced": chald.reduced
+                },
+                "HEBREW_GEMATRIA": {
+                    "Full_Value": hebrew.full,
+                    "Reduced": hebrew.reduced
+                },
+                "RUNE_DIVINATION": {
+                    "First_Rune": firstRune,
+                    "Last_Rune": lastRune,
+                    "Dominant_Rune": domRune
+                },
+                "TAROT_CORRESPONDENCE": {
+                    "Expression_Card": CIPHER.getTarot(pyth.expression),
+                    "Soul_Urge_Card": CIPHER.getTarot(pyth.soulUrge),
+                    "Personality_Card": CIPHER.getTarot(pyth.personality)
+                },
+                "KABBALAH_TREE": {
+                    "Sefiroth_Dominant": CIPHER.getSephiroth(pyth.expression)
+                }
+            };
+
+            // 6. DISPLAY
+            document.getElementById('result-display').innerText = JSON.stringify(FINAL_OUTPUT, null, 4);
+        }
+
+    </script>
+</body>
+
+</html>
+</script>
+
+
+<!-- END OF CHAT 1 -->
